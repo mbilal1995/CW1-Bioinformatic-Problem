@@ -1,4 +1,75 @@
-BLAST 
+#import data
+data = r"C:\Users\Mohammed Bilal\Desktop\BRCA1_mRNA_isolate_D.fasta"
 
-1. BRCA1_partial_gene_isolates
-2. BRCA1 mRNA_isolate_D
+#import SeqIO
+from Bio import SeqIO
+
+#Parse the file
+with open(data, "r") as f_in:
+    sequences = SeqIO.parse(f_in, "fasta")
+    for seqs in sequences:
+        print(seqs.description + "\n" + seqs.seq)
+        
+#Import NCBIWWW 
+from Bio.Blast import NCBIWWW
+
+#Remotely connect to NCBI database
+result_handle = NCBIWWW.qblast("blastn", "nt", str(seqs.seq))
+
+#Open the XML file
+blast_result = result_handle.read()
+
+print(blast_result)
+
+with open(r"C:\Users\Mohammed Bilal\Desktop\CW1 MB_problem\BLAST\BRCA1_mRNA_isolate_D_BLAST_output.xml", "w") as f_out:
+    f_out.write(blast_result) #specifying the path name, so we know where to look for it.
+    
+#NEW data 
+xml_data = r"C:\Users\Mohammed Bilal\Desktop\CW1 MB_problem\BLAST\BRCA1_mRNA_isolate_D_BLAST_output.xml"
+
+#Import NCBIXML 
+from Bio.Blast import NCBIXML
+
+#Parse the new data 
+with open(xml_data, "r") as f_in:
+    for records in NCBIXML.parse(f_in):
+        for alignments in records.alignments:
+            #print(alignments)
+            for hsp in alignments.hsps:
+                #print(hsp)
+                 print(str(alignments).split(">")[0].strip(), str(hsp))          
+                 
+   ************************************************************************************************************              
+
+data = r"C:\Users\Mohammed Bilal\Desktop\BRCA1_partial_gene_isolates.fasta"
+
+from Bio import SeqIO
+
+with open(data, "r") as f_in:
+    sequences = SeqIO.parse(f_in, "fasta")
+    for seqs in sequences:
+        print(seqs.description + "\n" + seqs.seq)
+        
+from Bio.Blast import NCBIWWW
+
+result_handle = NCBIWWW.qblast("blastn", "nt", str(seqs.seq))
+
+blast_result = result_handle.read()
+
+print(blast_result)
+
+with open(r"C:\Users\Mohammed Bilal\Desktop\CW1 MB_problem\BLAST\BRCA1_partial_gene_isolates_BLAST_output.xml", "w") as f_out:
+    f_out.write(blast_result) #specifying the path name, so we know where to look for it.
+
+xml_data = r"C:\Users\Mohammed Bilal\Desktop\CW1 MB_problem\BLAST\BRCA1_partial_gene_isolates_BLAST_output.xml"
+
+from Bio.Blast import NCBIXML
+
+with open(xml_data, "r") as f_in:
+    for records in NCBIXML.parse(f_in):
+        for alignments in records.alignments:
+            #print(alignments)
+            for hsp in alignments.hsps:
+                #print(hsp)
+                print(str(alignments).split(">")[0].strip(), str(hsp))
+                
