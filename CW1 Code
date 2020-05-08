@@ -1,0 +1,238 @@
+# Bioinformatic Problem - Part A
+
+# This document contains code to solve the Bioinformatic problem associated
+# with the BIS7018-B Advanced Bioinformatics module.
+
+
+#  1 Functions
+
+
+# I. These functions produce 'biologically meaningful' data.
+# II. These functions can work in conjunction to each other.
+# III. A use-case example: count_diffs(compare_seqs(<seq1>, <seq2>))
+# IV. The functions are...
+
+#1.
+# 'count_diffs' takes two parameters
+def count_diffs(seq1, seq2):
+    '''This function counts the number of differences between two strings.
+    Returns the number of differences.'''
+    # count function, default:0
+    diff_count = 0
+    # for loop with range of items in 'seq1'
+    for x in range(0, len(seq1), 1):
+        # if 'x' in seq1 is divergent to 'x' in seq2
+        if not seq1[x] == seq2[x]:
+            # add a single count, to the count function
+            diff_count = diff_count +1
+    #Return the new 'diff_count'
+    return diff_count
+
+
+#2.
+# 'compare_diffs' takes two parameters
+def compare_seqs(sequence1, sequence2):
+    '''This function compares pairs of aligned sequences, and extracts the base
+    pairs that differ. Returns a list of lists, each containing two elements -
+    sequence1 base & sequence2 base.'''
+    # empty list object
+    different_list = []
+    #for loop with range of bases in 'sequence1'
+    for bases in range (0, len(sequence1),1):
+        # if 'bases' in sequence1 is divergent to 'bases' in sequence2
+        if sequence1[bases]!=sequence2[bases]:
+            # add both pairs of '[bases]' to the to the list object, 'differences_list'.
+            different_list.append([sequence1[bases],sequence2[bases]])
+    #Return the appended list object
+    return different_list
+
+
+#3.
+# 'analyse_diffs' takes one parameters
+def analyse_diffs(diff_list):
+    '''This function takes a list of basepair couples, and counts the number of
+    substitutions and indels. Returns a substitution count and Indel count.'''
+    # list objective, containing the nitrogenous bases
+    bases_list = ["a","t","c","g"]
+    # count function for substitutions, default = 0
+    sub_count = 0
+    # count function for Indels, default = 0
+    indel_count = 0
+    # itterate over the 'diff_list'
+    for elements in diff_list:
+        # if loop, capturing elements [0] & [1] that are in 'bases_list'
+        if elements[0] in bases_list and elements[1] in bases_list:
+            # add a single count, to the sub_count function
+            sub_count = sub_count + 1
+        else:
+            # add a single count, to the indel_count function
+            indel_count = indel_count + 1
+    # return the new 'sub_count' and 'indel_count'
+    return [sub_count, indel_count]
+
+
+#4.
+#'transition_transversion' takes two parameters
+def transition_transversion(seq1, seq2):
+    '''This function describes base pair sets which define a transition only
+    then analyses bases from two sequences and counts the number
+    of transitions & transversions. Returns a count of the number of
+    transitions, and the number of transversions.'''
+    # count function for transitions, default = 0
+    transition_count = 0
+    # count function for transversions, default = 0
+    transversion_count = 0
+    # for loop with range: for bases in 'seq1'
+    for bases in range(0, len(seq1), 1):
+        # for [bases] in both seqs that are divergent to each other
+        if not seq1[bases] == seq2[bases]:
+            # if loop, describing transition base combinations
+            if seq1[bases] == "a" and seq2[bases] == "g" \
+            or seq1[bases] == "g" and seq2[bases] == "a" \
+            or seq1[bases] == "c" and seq2[bases] == "t" \
+            or seq1[bases] == "t" and seq2[bases] == "c":
+                # add a single count, to the 'transition_count'
+                transition_count = transition_count +1
+            else:
+                ## add a single count, to the 'transversion_count'
+                transversion_count = transversion_count + 1
+    # return the new 'transition_count' & 'transversion_count'
+    return [transition_count, transversion_count]
+
+
+
+
+###  2 Pairwise Comparisons
+
+
+# Aim: To create all the possible pairwise comparisons of sequence data stored
+# within a dictionary and output them.
+# Method: Use a dictionary + Bio:AlignIO module + Itertool combinations module.
+
+
+# I. Dictionaries maps a set of objects (keys) to another set of objects (values).
+# II. 'Bio.AlignIO' module is a multiple sequence alignment input/output interface.
+# III. Bio.AlignIO deals with files containing one or more sequence alignments.
+# IV. 'Itertools' is a module in python, used to iterate over data structures.
+# V. 'itertools.combinations()' module in Python prints all possible combinations.
+
+
+# Step 1: Parse a file using AlignIO
+
+# import the module from Biopython
+from Bio import AlignIO
+# input file - User's pathway to file.
+file_in = "/location/to/file_in"
+# Read in the file as 'clustal' format
+align = AlignIO.read(file_in, "clustal")
+# print the alignments
+print(align)
+# print outputs in a the clustal format.
+print(align.format("clustal"))
+
+# Step 2: Create a dictionary (of tuples) to hold the keys & values
+
+name_dict = {}                          # Empty dictionary
+for records in align:                   # itterate through all items in 'align'
+    name_dict[records.id] = records.seq # Add HEADERS as key, SEQUENCES as value
+print(name_dict)                        # Print the 'new' dictionary.
+print('\n')
+
+# Step 3: Create all possible pairwise combinations using 'Itertools combinations'
+
+# import the module
+import itertools
+# import combinations module
+from itertools import combinations
+# produces all combinations of two, without repeated elements (Every pairwise combination).
+for x, y in (list(itertools.combinations(align, 2))):
+    # Prints all header combinations.
+    print("({0}) vs ({1})".format(x.id.strip("_"), y.id.strip("_")))
+
+# Step 4: Apply 'biologically meaningful functions' to the combinations
+
+# import the module
+import itertools
+# import combinations module
+from itertools import combinations
+# produces all combinations of two, without repeated elements (Every pairwise combination).
+for x, y in (list(itertools.combinations(align, 2))):
+    # biologically meaningful functions applied to all possible pairwise combinations using 'print' statements.
+    print("FOR RECORDS-")
+    print("({0}) vs ({1})".format(x.id.strip("_"), y.id.strip("_")))
+    print("THERE ARE", count_diffs(x.seq, y.seq), "DIFFERENCES")
+    print("DIFFERENCES ARE:", compare_seqs(x.seq, y.seq))
+    print("SUBSTITUTION | INDEL COUNT:", analyse_diffs(compare_seqs(x.seq, y.seq)))
+    print("TRANSITION | TRANSVERSION COUNT:", transition_transversion(x.seq, y.seq))
+    print("\n")
+
+
+
+### 3  Intergrating MAFFT into Python (first way)
+
+
+# This section describes the code used to directly intergrate MAFFT into Python 3.7
+# the module for this is: from Bio.Align.Applications import MafftCommandline.
+
+#STEP 1 - Locations, locations, locations
+
+# import the module
+from Bio.Align.Applications import MafftCommandline
+# User input needed for mafft extension location
+mafft_exe = "/location/of/mafft"
+# User input needed for in_file.
+in_file = "/location/of/in_file.ext"
+# run the command with 'mafft_cline'
+mafft_cline = MafftCommandline(mafft_exe, input=in_file)
+# print out the 'mafft_cline' parameters
+print(mafft_cline)
+
+##STEP 2 - Write Out & Parse
+
+# assign 'mafft_cline' to standard output, standard error
+stdout, stderr = mafft_cline()
+# the name of the 'new file' to be written out, as a 'handle' #Note: User must specify where to save the file i.e provide the path
+with open("/location/of/__aligned.fasta", "w") as handle:
+    # write out the result of the standard output to new file.
+    handle.write(stdout)
+
+#Step 3 - View
+
+# import AlignIO from Biopython
+from Bio import AlignIO
+# Parse the aligned new file using AlignIO
+align = AlignIO.read("/location/of/__aligned.fasta", "fasta")
+# itterate through all alignments
+for alignments in align:
+    # print the sequences from all alignments in the file.
+    print(alignments.seq)
+
+
+### 4  Intergrating MAFFT through Python (via. command-line) (second way)
+
+
+# This section describes the code used to intergrate the MAFFT alignment
+# programme through python in the command-line.
+# the module for this is: sys module.
+
+
+# Import the module sys
+import sys
+# Import the mafft module
+from Bio.Align.Applications import MafftCommandline
+# the first command-line argument (as a string) # Note: User input required - MAFFT location
+mafft_exe = sys.argv[1]
+# the second command-line argument (as a string) # Note: User input required - File loaction
+in_file = sys.argv[2]
+# run the command line with 'mafft_cline()'
+mafft_cline = MafftCommandline(mafft_exe, input=in_file)
+# print out the 'mafft_cline' parameters
+print(mafft_cline)
+
+stdout, stderr = mafft_cline()                                                  # asign 'mafft_cline' to standard output, standard error
+with open("/your/location/of/file/aligned__.fasta", "w") as handle:             # access the 'new file', as a 'handle'
+    handle.write(stdout)                                                        # write out the result to the standard output.
+
+
+
+#END.
